@@ -7,7 +7,7 @@ LIST_OF_WORDS = ['krishna','madhusudan','nrsimha']
 def _get_random_word(list_of_words):
     if len(list_of_words) == 0:
         raise(InvalidWordException)
-    return(list_of_words[randint(0, len(list_of_words))])
+    return(list_of_words[random.randint(0, len(list_of_words))])
 
 def _mask_word(word):
     if len(word) == 0:
@@ -15,35 +15,48 @@ def _mask_word(word):
     return('*'* len(word))
 
 def _uncover_word(answer_word, masked_word, character):
-    if len(answer_word)== 0 and len(masked_word) == 0:
+    
+    if len(answer_word)== 0 or len(masked_word) == 0:
         raise(InvalidWordException)
-    elif len(masked_word) > 1:
+        
+    if len(character) > 1:
         raise(InvalidGuessedLetterException)
-    elif len(masked_word) > len(answer_word):
+        
+    if len(masked_word) != len(answer_word):
         raise(InvalidWordException)
-    else:    
-        index = [i for i,x in enumerate(list(answer_word)) if x==uppercase(character) or x==lowercase(character)]
-        for a in index:
-            masked_word[index] = character
+        
+    index = [i for i,x in enumerate(list(answer_word)) if x==character.upper() or x==character.lower()]
+    new_list = list(masked_word)
+    for a in index:
+        new_list[a] = character
+    masked_word = ''.join(new_list)
     
     return(masked_word)
 
 def guess_letter(game, letter):
+     
+    letter = letter.lower()
+        
+    if letter in game['previous_guesses']:
+        raise InvalidGuessedLetterException()
     
-    if game['masked_word'] == answer_word:
+    if game['masked_word'] == answer_word or game['remaining_misses'] <=0:
         raise(GameFinishedException)
+    
+    prev_word = game['masked_word']
+    new_word = _uncover_word(game['answer_word'], game['masked_word'],letter)
+    
+    game['previous_guess'].append(letter)
+        
+    if new_word == prev_word:
+        game['remaining_misses'] = game['remaining_misses'] - 1
     else:
-        prev_word = game['masked_word']
-        game['masked_word'] = _uncover_word(game['answer_word'], game['masked_word'],letter)
-        game['previous_guess'] = game['previous_guess'].append(letter)
+        game['masked_word'] = new_word
         
-        if game['masked_word'] == prev_word:
-            game['remaining_misses'] = game['remaining_misses'] - 1
-        
-        if game['masked_word'] == answer_word:
-            raise(GameWonException)
-        elif remaining_misses <= 0:
-            raise(GameLostException)
+    if game['masked_word'] == answer_word:
+        raise(GameWonException)
+    elif remaining_misses <= 0:
+        raise(GameLostException)
      
     return(game)
 
