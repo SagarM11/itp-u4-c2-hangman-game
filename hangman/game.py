@@ -56,7 +56,7 @@ def guess_letter(game, letter):
     else:
         game['masked_word'] = new_word
         
-    if game['masked_word'] == answer_word:
+    if game['masked_word'] == game['answer_word']:
         raise GameWonException()
     elif remaining_misses <= 0:
         raise GameLostException()
