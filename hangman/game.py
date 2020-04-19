@@ -17,6 +17,7 @@ def _mask_word(word):
 def _uncover_word(answer_word, masked_word, character):
     
     character = character.lower()
+    answer_word = answer_word.lower()
     
     if len(answer_word) == 0 or len(masked_word) == 0:
         raise InvalidWordException()
