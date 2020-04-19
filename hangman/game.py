@@ -26,8 +26,7 @@ def _uncover_word(answer_word, masked_word, character):
         new_word = list(masked_word)
         for a in index:
             new_word[a] = character
-            masked_word = "".join(new_word)
-              
+        masked_word = "".join(new_word)
     return(masked_word)
 
 def guess_letter(game, letter):
