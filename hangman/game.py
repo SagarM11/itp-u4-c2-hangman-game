@@ -6,12 +6,12 @@ LIST_OF_WORDS = []
 
 def _get_random_word(list_of_words):
     if len(list_of_words) == 0:
-        raise(InvalidWordException)
-    return(list_of_words[random.randint(0, len(list_of_words))])
+        raise InvalidWordException()
+    return(list_of_words[random.randint(0, len(list_of_words)-1)])
 
 def _mask_word(word):
     if len(word) == 0:
-        raise(InvalidWordException)
+        raise InvalidWordException())
     return('*'* len(word))
 
 def _uncover_word(answer_word, masked_word, character):
@@ -19,18 +19,19 @@ def _uncover_word(answer_word, masked_word, character):
     character = character.lower()
     
     if len(answer_word)== 0 or len(masked_word) == 0:
-        raise(InvalidWordException)
+        raise InvalidWordException()
         
     if len(character) > 1:
-        raise(InvalidGuessedLetterException)
+        raise InvalidGuessedLetterException()
         
     if len(masked_word) != len(answer_word):
-        raise(InvalidWordException)
+        raise InvalidWordException()
         
-    index = [i for i,x in enumerate(list(answer_word)) if x==character.lower()]
+    index = [i for i,x in enumerate(list(answer_word)) if x==character]
     new_list = list(masked_word)
     for a in index:
         new_list[a] = character
+    
     masked_word = ''.join(new_list)
     
     return(masked_word)
@@ -42,8 +43,8 @@ def guess_letter(game, letter):
     if letter in game['previous_guesses']:
         raise InvalidGuessedLetterException()
     
-    if game['masked_word'] == answer_word or game['remaining_misses'] <=0:
-        raise(GameFinishedException)
+    if game['masked_word'] == game['answer_word'] or game['remaining_misses'] <=0:
+        raise GameFinishedException()
     
     prev_word = game['masked_word']
     new_word = _uncover_word(game['answer_word'], game['masked_word'],letter)
@@ -56,10 +57,9 @@ def guess_letter(game, letter):
         game['masked_word'] = new_word
         
     if game['masked_word'] == answer_word:
-        raise(GameWonException)
-        
+        raise GameWonException()
     elif remaining_misses <= 0:
-        raise(GameLostException)
+        raise GameLostException()
      
     return(game)
 
