@@ -6,7 +6,7 @@ LIST_OF_WORDS = []
 
 def _get_random_word(list_of_words):
     if len(list_of_words) == 0:
-        raise InvalidWordException()
+        raise InvalidListOfWordsException()
     return(list_of_words[random.randint(0, len(list_of_words)-1)])
 
 def _mask_word(word):
