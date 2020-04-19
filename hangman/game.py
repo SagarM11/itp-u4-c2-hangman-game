@@ -5,6 +5,8 @@ import random
 LIST_OF_WORDS = ['krishna','madhusudan','nrsimha']
 
 def _get_random_word(list_of_words):
+    if len(list_of_words) == 0:
+        raise(InvalidWordException)
     return(list_of_words[randint(0, len(list_of_words))])
 
 def _mask_word(word):
@@ -58,4 +60,4 @@ def start_new_game(list_of_words=None, number_of_guesses=5):
         'remaining_misses': number_of_guesses,
     }
 
-    return(game)
+    return game
