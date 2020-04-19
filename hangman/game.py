@@ -6,33 +6,38 @@ LIST_OF_WORDS = ['krishna','madhusudan','nrsimha']
 
 def _get_random_word(list_of_words):
     if len(list_of_words) == 0:
-        raise(InvalidWordException)
+        raise InvalidWordException()
     return(list_of_words[randint(0, len(list_of_words))])
 
 def _mask_word(word):
     if len(word) == 0:
-        raise(InvalidWordException)
+        raise InvalidWordException()
     return('*'* len(word))
 
 def _uncover_word(answer_word, masked_word, character):
     if len(answer_word)== 0 and len(masked_word) == 0:
-        raise(InvalidWordException)
-    elif len(masked_word) > 1:
-        raise(InvalidGuessedLetterException)
-    elif len(masked_word) > len(answer_word):
-        raise(InvalidWordException)
+        raise InvalidWordException()
+    elif len(character) > 1:
+        raise InvalidGuessedLetterException()
+    elif len(masked_word) != len(answer_word):
+        raise InvalidWordException()
     else:    
-        index = [i for i,x in enumerate(list(answer_word)) if x==uppercase(character) or x==lowercase(character)]
+        index = [i for i,x in enumerate(list(answer_word)) if x==character.upper() or x==character.lower()]
+        new_word = list(masked_word)
         for a in index:
-            masked_word[index] = character
-    
+            new_word[a] = character
+            masked_word = "".join(new_word)
+              
     return(masked_word)
 
 def guess_letter(game, letter):
     
-    if game['masked_word'] == answer_word:
-        raise(GameFinishedException)
+    if game['masked_word'] == answer_word or game['remaining_misses'] <= 0:
+        raise GameFinishedException()
     else:
+        if letter in game['previous_guess']:
+            raise InvalidGuessedLetterException()
+       
         prev_word = game['masked_word']
         game['masked_word'] = _uncover_word(game['answer_word'], game['masked_word'],letter)
         game['previous_guess'] = game['previous_guess'].append(letter)
@@ -41,9 +46,9 @@ def guess_letter(game, letter):
             game['remaining_misses'] = game['remaining_misses'] - 1
         
         if game['masked_word'] == answer_word:
-            raise(GameWonException)
-        elif remaining_misses <= 0:
-            raise(GameLostException)
+            raise GameWonException()
+        if remaining_misses <= 0:
+            raise GameLostException()
      
     return(game)
 
